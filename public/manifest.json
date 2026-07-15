@@ -1,0 +1,23 @@
+{
+  "name": "HostLore — Learn Hosting the Fun Way",
+  "short_name": "HostLore",
+  "description": "Learn how hosting, servers, databases, and deployment actually work.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f6f3",
+  "theme_color": "#ff6b6b",
+  "icons": [
+    {
+      "src": "/favicon/hostlore.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon/hostlore-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

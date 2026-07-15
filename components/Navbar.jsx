@@ -1,10 +1,13 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
+import { useTheme } from './ThemeProvider';
+import Search from './Search';
 
 export default function Navbar() {
+  const { theme, toggle, mounted } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -17,6 +20,7 @@ export default function Navbar() {
     { href: '#hosting', label: 'Hosting' },
     { href: '#databases', label: 'Databases' },
     { href: '#platforms', label: 'Platforms' },
+    { href: '#quiz', label: 'Quiz' },
   ];
 
   function handleNav(e, href) {
@@ -27,32 +31,54 @@ export default function Navbar() {
   }
 
   return (
-    <nav className={`nav${scrolled ? ' scrolled' : ''}`}>
-      <div className="nav-inner">
-        <a href="#hero" className="nav-logo" onClick={e => handleNav(e, '#hero')}>
-          <span className="nav-logo-icon">🦎</span>
-          <span className="nav-logo-text gradient-text">HostLore</span>
-        </a>
-
-        <div className={`nav-menu${menuOpen ? ' open' : ''}`}>
-          {links.map(l => (
-            <a key={l.href} href={l.href} className="nav-link" onClick={e => handleNav(e, l.href)}>
-              {l.label}
-            </a>
-          ))}
-          <a href="#ask" className="nav-cta" onClick={e => handleNav(e, '#ask')}>
-            Ask Away!
+    <>
+      <nav className={`nav${scrolled ? ' scrolled' : ''}`}>
+        <div className="nav-inner">
+          <a href="#hero" className="nav-logo" onClick={e => handleNav(e, '#hero')}>
+            <span className="nav-logo-icon">🦎</span>
+            <span className="nav-logo-text gradient-text">HostLore</span>
           </a>
-        </div>
 
-        <button
-          className={`hamburger${menuOpen ? ' open' : ''}`}
-          onClick={() => setMenuOpen(p => !p)}
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-        >
-          <span /><span /><span />
-        </button>
-      </div>
+          <div className={`nav-menu${menuOpen ? ' open' : ''}`}>
+            {links.map(l => (
+              <a key={l.href} href={l.href} className="nav-link" onClick={e => handleNav(e, l.href)}>
+                {l.label}
+              </a>
+            ))}
+            <button className="nav-icon-btn" onClick={() => setSearchOpen(true)} aria-label="Search">
+              🔍
+            </button>
+            {mounted && (
+              <button className="nav-icon-btn theme-btn" onClick={toggle} aria-label="Toggle theme">
+                {theme === 'light' ? '🌙' : '☀️'}
+              </button>
+            )}
+            <a href="#ask" className="nav-cta" onClick={e => handleNav(e, '#ask')}>
+              Ask Away!
+            </a>
+          </div>
+
+          <div className="nav-actions">
+            <button className="nav-icon-btn" onClick={() => setSearchOpen(true)} aria-label="Search">
+              🔍
+            </button>
+            {mounted && (
+              <button className="nav-icon-btn theme-btn" onClick={toggle} aria-label="Toggle theme">
+                {theme === 'light' ? '🌙' : '☀️'}
+              </button>
+            )}
+            <button
+              className={`hamburger${menuOpen ? ' open' : ''}`}
+              onClick={() => setMenuOpen(p => !p)}
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            >
+              <span /><span /><span />
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <Search isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
 
       <style jsx>{`
         .nav {
@@ -63,7 +89,7 @@ export default function Navbar() {
           transition: all var(--fast);
         }
         .nav.scrolled {
-          background: rgba(255, 255, 255, 0.92);
+          background: var(--bg-card);
           backdrop-filter: blur(20px);
           box-shadow: var(--shadow-sm);
           padding: 10px 0;
@@ -82,9 +108,7 @@ export default function Navbar() {
           gap: 8px;
           text-decoration: none;
         }
-        .nav-logo-icon {
-          font-size: 1.5rem;
-        }
+        .nav-logo-icon { font-size: 1.5rem; }
         .nav-logo-text {
           font-family: var(--font-display);
           font-size: 1.3rem;
@@ -107,6 +131,22 @@ export default function Navbar() {
         .nav-link:hover {
           color: var(--coral);
           background: var(--coral-bg);
+        }
+        .nav-icon-btn {
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-size: 1.1rem;
+          padding: 6px 8px;
+          border-radius: 8px;
+          transition: background var(--fast);
+          line-height: 1;
+        }
+        .nav-icon-btn:hover { background: var(--bg-soft); }
+        .nav-actions {
+          display: none;
+          align-items: center;
+          gap: 4px;
         }
         .nav-cta {
           background: var(--gradient-primary);
@@ -147,7 +187,7 @@ export default function Navbar() {
         .hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
         @media (max-width: 768px) {
-          .hamburger { display: flex; }
+          .nav-actions { display: flex; }
           .nav-menu {
             display: none;
             position: fixed;
@@ -163,8 +203,11 @@ export default function Navbar() {
           .nav-menu.open { display: flex; }
           .nav-link { text-align: center; padding: 12px; border-radius: 10px; }
           .nav-cta { text-align: center; margin-left: 0; margin-top: 4px; }
+          .nav-icon-btn { display: none; }
+          .nav-menu .nav-icon-btn { display: flex; justify-content: center; padding: 10px; }
+          .hamburger { display: flex; }
         }
       `}</style>
-    </nav>
+    </>
   );
 }
