@@ -1,11 +1,12 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-const FLOW_STEPS = [
-  { label: 'You type a URL', icon: '⌨️', color: '#ec4899' },
-  { label: 'DNS lookup', icon: '📖', color: '#8b5cf6' },
-  { label: 'Server responds', icon: '🖥️', color: '#6366f1' },
-  { label: 'Page loads!', icon: '🎉', color: '#38bdf8' },
+const STEPS = [
+  { icon: '⌨️', label: 'Type URL', color: '#ff6b6b' },
+  { icon: '📖', label: 'DNS Lookup', color: '#6c5ce7' },
+  { icon: '🤝', label: 'Connect', color: '#4ecdc4' },
+  { icon: '🖥️', label: 'Server', color: '#fd79a8' },
+  { icon: '🎉', label: 'Page!', color: '#ffd93d' },
 ];
 
 export default function Hero() {
@@ -20,31 +21,31 @@ export default function Hero() {
   }, []);
 
   useEffect(() => {
-    const t = setInterval(() => setActiveStep(p => (p + 1) % FLOW_STEPS.length), 1200);
+    const t = setInterval(() => setActiveStep(p => (p + 1) % STEPS.length), 1000);
     return () => clearInterval(t);
   }, []);
 
   return (
     <section id="hero" className="hero">
-      <div className="hero-glow" />
-      <div className="hero-glow-2" />
+      <div className="hero-bg-shape hero-shape-1" />
+      <div className="hero-bg-shape hero-shape-2" />
+      <div className="hero-bg-shape hero-shape-3" />
 
       <div className="hero-content">
         <div className="hero-text">
           <div className="hero-badge">
-            <span className="hero-badge-dot" />
-            Interactive learning platform
+            <span>🦎</span> Interactive learning platform
           </div>
 
           <h1 className="hero-title">
-            How the web actually
+            How the web
             <br />
-            <span className="gradient-text">works</span>
+            <span className="gradient-text">actually works</span>
           </h1>
 
           <p className="hero-subtitle">
-            From typing a URL to pixels on screen — HostLore breaks down hosting,
-            servers, databases, and deployment with zero jargon and real analogies.
+            From typing a URL to pixels on screen — learn about hosting, servers,
+            databases, and deployment with fun analogies and zero jargon.
           </p>
 
           <div className="hero-actions">
@@ -53,9 +54,7 @@ export default function Hero() {
               document.querySelector('#journey')?.scrollIntoView({ behavior: 'smooth' });
             }}>
               Start Learning
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M6 3L11 8L6 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+              <span className="btn-arrow">→</span>
             </a>
             <a href="#ask" className="btn btn-secondary" onClick={e => {
               e.preventDefault();
@@ -79,35 +78,41 @@ export default function Hero() {
               <div className="hero-stat-divider" />
               <div className="hero-stat">
                 <span className="hero-stat-number">{stats.unmatched || 0}</span>
-                <span className="hero-stat-label">New topics suggested</span>
+                <span className="hero-stat-label">Suggested topics</span>
               </div>
             </div>
           )}
         </div>
 
         <div className="hero-visual">
-          <div className="flow-diagram">
-            {FLOW_STEPS.map((step, i) => (
-              <div key={i} className={`flow-step${i === activeStep ? ' active' : ''}${i < activeStep ? ' done' : ''}`}>
-                <div className="flow-step-icon">{step.icon}</div>
-                <div className="flow-step-label">{step.label}</div>
-                {i < FLOW_STEPS.length - 1 && (
-                  <div className={`flow-arrow${i < activeStep ? ' done' : ''}`}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                      <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke={i < activeStep ? step.color : 'var(--text-dim)'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+          <div className="flow-card">
+            <div className="flow-card-header">
+              <span className="flow-card-dot" style={{ background: '#ff6b6b' }} />
+              <span className="flow-card-dot" style={{ background: '#ffd93d' }} />
+              <span className="flow-card-dot" style={{ background: '#4ecdc4' }} />
+              <span className="flow-card-title">hostlore.app</span>
+            </div>
+            <div className="flow-steps">
+              {STEPS.map((step, i) => (
+                <div key={i} className={`flow-step${i === activeStep ? ' active' : ''}`}>
+                  <div className="flow-icon" style={{ background: `${step.color}15`, color: step.color }}>
+                    {step.icon}
                   </div>
-                )}
-              </div>
-            ))}
+                  <div className="flow-label">{step.label}</div>
+                  {i < STEPS.length - 1 && (
+                    <div className={`flow-line${i < activeStep ? ' done' : ''}`}>
+                      <div className="flow-line-inner" />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-          <p className="flow-hint">Watch what happens when you visit a site</p>
         </div>
       </div>
 
-      <div className="scroll-indicator">
-        <span className="scroll-text">Scroll to explore</span>
-        <div className="scroll-line" />
+      <div className="scroll-hint">
+        <span>↓ Scroll to explore</span>
       </div>
 
       <style jsx>{`
@@ -117,23 +122,27 @@ export default function Hero() {
           align-items: center;
           position: relative;
           overflow: hidden;
-          padding: 140px 0 80px;
+          padding: 120px 0 60px;
         }
-        .hero-glow {
+        .hero-bg-shape {
           position: absolute;
-          width: 600px; height: 600px;
           border-radius: 50%;
-          background: radial-gradient(circle, rgba(236, 72, 153, 0.12) 0%, transparent 60%);
-          top: -200px; right: -100px;
           pointer-events: none;
         }
-        .hero-glow-2 {
-          position: absolute;
+        .hero-shape-1 {
           width: 500px; height: 500px;
-          border-radius: 50%;
-          background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 60%);
-          bottom: -150px; left: -100px;
-          pointer-events: none;
+          background: radial-gradient(circle, rgba(255, 107, 107, 0.08) 0%, transparent 60%);
+          top: -150px; right: -100px;
+        }
+        .hero-shape-2 {
+          width: 400px; height: 400px;
+          background: radial-gradient(circle, rgba(108, 92, 231, 0.06) 0%, transparent 60%);
+          bottom: -100px; left: -100px;
+        }
+        .hero-shape-3 {
+          width: 300px; height: 300px;
+          background: radial-gradient(circle, rgba(78, 205, 196, 0.06) 0%, transparent 60%);
+          top: 40%; left: 50%;
         }
         .hero-content {
           max-width: var(--max-width);
@@ -151,55 +160,51 @@ export default function Hero() {
           display: inline-flex;
           align-items: center;
           gap: 8px;
-          background: rgba(139, 92, 246, 0.08);
-          border: 1px solid rgba(139, 92, 246, 0.2);
-          color: var(--purple);
-          padding: 6px 14px;
+          background: var(--coral-bg);
+          border: 2px solid rgba(255, 107, 107, 0.2);
+          color: var(--coral);
+          padding: 6px 16px;
           border-radius: 100px;
-          font-size: 0.78rem;
+          font-size: 0.85rem;
           font-weight: 600;
-          margin-bottom: 24px;
+          margin-bottom: 20px;
+          font-family: var(--font-display);
         }
-        .hero-badge-dot {
-          width: 6px; height: 6px;
-          background: var(--green);
-          border-radius: 50%;
-          animation: pulse-dot 2s infinite;
-        }
-        @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.3} }
         .hero-title {
           font-family: var(--font-display);
           font-size: clamp(2.8rem, 5vw, 4.2rem);
-          font-weight: 800;
-          line-height: 1.08;
-          letter-spacing: -0.04em;
-          margin-bottom: 20px;
+          font-weight: 700;
+          line-height: 1.1;
+          letter-spacing: -0.02em;
+          margin-bottom: 16px;
         }
         .hero-subtitle {
           font-size: 1.05rem;
           color: var(--text-secondary);
           max-width: 480px;
           line-height: 1.85;
-          margin-bottom: 36px;
+          margin-bottom: 32px;
         }
         .hero-actions {
           display: flex;
           gap: 12px;
           flex-wrap: wrap;
-          margin-bottom: 48px;
+          margin-bottom: 40px;
         }
+        .btn-arrow { transition: transform var(--fast); }
+        .btn-primary:hover .btn-arrow { transform: translateX(4px); }
         .hero-stats {
           display: flex;
           align-items: center;
           gap: 24px;
-          padding-top: 24px;
-          border-top: 1px solid var(--border);
+          padding-top: 20px;
+          border-top: 2px solid var(--border);
         }
         .hero-stat { display: flex; flex-direction: column; }
         .hero-stat-number {
           font-family: var(--font-display);
           font-size: 1.6rem;
-          font-weight: 800;
+          font-weight: 700;
           background: var(--gradient-primary);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -207,12 +212,11 @@ export default function Hero() {
           line-height: 1;
         }
         .hero-stat-label {
-          font-size: 0.7rem;
-          color: var(--text-dim);
-          text-transform: uppercase;
-          letter-spacing: 0.07em;
+          font-size: 0.72rem;
+          color: var(--text-muted);
           margin-top: 4px;
           white-space: nowrap;
+          font-weight: 500;
         }
         .hero-stat-divider {
           width: 1px; height: 36px;
@@ -220,92 +224,110 @@ export default function Hero() {
           flex-shrink: 0;
         }
 
-        .flow-diagram {
+        .flow-card {
           background: var(--bg-card);
-          border: 1px solid var(--border);
+          border: 2px solid var(--border);
           border-radius: 20px;
-          padding: 32px;
+          overflow: hidden;
+          box-shadow: var(--shadow-md);
+        }
+        .flow-card-header {
           display: flex;
           align-items: center;
-          gap: 0;
-          position: relative;
+          gap: 8px;
+          padding: 14px 18px;
+          background: var(--bg-soft);
+          border-bottom: 2px solid var(--border);
+        }
+        .flow-card-dot {
+          width: 10px; height: 10px;
+          border-radius: 50%;
+        }
+        .flow-card-title {
+          margin-left: 4px;
+          font-size: 0.8rem;
+          color: var(--text-muted);
+          font-family: var(--font-display);
+        }
+        .flow-steps {
+          padding: 28px;
+          display: flex;
+          align-items: center;
         }
         .flow-step {
           display: flex;
-          flex-direction: column;
           align-items: center;
-          gap: 8px;
+          gap: 0;
           flex: 1;
+        }
+        .flow-icon {
+          width: 52px;
+          height: 52px;
+          border-radius: 14px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.4rem;
           transition: all 0.3s var(--ease-out);
-        }
-        .flow-step-icon {
-          font-size: 2rem;
-          transition: transform 0.3s var(--ease-out);
-        }
-        .flow-step.active .flow-step-icon {
-          transform: scale(1.2);
-          animation: bounce-icon 0.4s var(--ease-out);
-        }
-        @keyframes bounce-icon { 0%{transform:scale(1)} 40%{transform:scale(1.3)} 100%{transform:scale(1.2)} }
-        .flow-step-label {
-          font-size: 0.72rem;
-          color: var(--text-muted);
-          font-weight: 500;
-          text-align: center;
-          font-family: var(--font-display);
-        }
-        .flow-step.active .flow-step-label { color: var(--text-primary); }
-        .flow-step.done .flow-step-label { color: var(--text-secondary); }
-        .flow-arrow {
           flex-shrink: 0;
-          display: flex;
-          align-items: center;
-          opacity: 0.4;
-          margin: 0 -4px;
         }
-        .flow-arrow.done { opacity: 1; }
-        .flow-hint {
-          text-align: center;
-          font-size: 0.72rem;
-          color: var(--text-dim);
-          margin-top: 14px;
-          font-family: var(--font-display);
+        .flow-step.active .flow-icon {
+          transform: scale(1.15);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        .scroll-indicator {
+        .flow-label {
+          display: none;
           position: absolute;
-          bottom: 32px; left: 50%;
+          bottom: -28px;
+          left: 50%;
           transform: translateX(-50%);
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 8px;
-          opacity: 0.35;
-        }
-        .scroll-text {
-          font-size: 0.65rem;
+          font-size: 0.7rem;
+          font-weight: 600;
           color: var(--text-muted);
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
+          white-space: nowrap;
           font-family: var(--font-display);
         }
-        .scroll-line {
-          width: 1px; height: 32px;
-          background: linear-gradient(to bottom, var(--text-muted), transparent);
-          animation: scroll-pulse 2s infinite;
+        .flow-step.active .flow-label { color: var(--coral); }
+        .flow-line {
+          flex: 1;
+          height: 3px;
+          margin: 0 4px;
+          background: var(--bg-soft);
+          border-radius: 3px;
+          position: relative;
+          overflow: hidden;
         }
-        @keyframes scroll-pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+        .flow-line-inner {
+          height: 100%;
+          width: 0%;
+          background: var(--gradient-primary);
+          border-radius: 3px;
+          transition: width 0.3s var(--ease-out);
+        }
+        .flow-line.done .flow-line-inner { width: 100%; }
+        .scroll-hint {
+          position: absolute;
+          bottom: 28px;
+          left: 50%;
+          transform: translateX(-50%);
+          font-size: 0.8rem;
+          color: var(--text-muted);
+          font-family: var(--font-display);
+          animation: bounce 2s infinite;
+        }
+        @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-8px)} }
 
         @media (max-width: 900px) {
-          .hero-content { grid-template-columns: 1fr; gap: 48px; }
+          .hero-content { grid-template-columns: 1fr; gap: 40px; }
           .hero-visual { order: -1; }
           .hero-subtitle { max-width: 100%; }
-          .flow-diagram { padding: 24px 16px; }
-          .flow-step-icon { font-size: 1.5rem; }
+          .flow-steps { padding: 20px; }
         }
         @media (max-width: 640px) {
           .hero-stats { gap: 14px; flex-wrap: wrap; }
           .hero-actions { flex-direction: column; }
           .btn { justify-content: center; }
+          .flow-icon { width: 42px; height: 42px; font-size: 1.1rem; }
         }
       `}</style>
     </section>

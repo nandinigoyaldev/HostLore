@@ -43,40 +43,35 @@ export default function AskHostlore() {
     setQuestion('');
   }
 
-  function handleKeyDown(e) {
-    if (e.key === 'Enter') handleSubmit();
-  }
-
   return (
-    <section id="ask" className="section">
-      <span className="section-number">05</span>
+    <section id="ask" className="section" style={{ background: '#fdfcfa' }}>
       <div className="container">
         <div className="section-header">
-          <div className="section-label">Ask HostLore</div>
+          <div className="section-label">🤖 Ask HostLore</div>
           <h2 className="section-title">
-            Got a question? Just ask.
+            Got a question? Just ask!
           </h2>
           <p className="section-desc">
-            Type any hosting question and HostLore will point you to the right section.
-            If we don&apos;t have an answer yet, we&apos;ll create a content request.
+            Type any hosting question and we&apos;ll point you to the right topic.
+            If we don&apos;t have it yet, we&apos;ll log it for future lessons.
           </p>
         </div>
 
         <div className="ask-wrapper">
           <div className="ask-status">
             <span className={`ask-dot${apiOnline ? ' online' : ''}`} />
-            <span>{apiOnline ? 'AI is online' : 'AI is offline'}</span>
+            <span>{apiOnline ? 'AI is online and ready!' : 'AI is offline'}</span>
           </div>
 
           <div className="ask-box">
-            <div className="ask-input-row">
-              <span className="ask-input-icon">🔍</span>
+            <div className="ask-row">
+              <span className="ask-icon">🔍</span>
               <input
                 ref={inputRef}
                 className="ask-input"
                 value={question}
                 onChange={e => setQuestion(e.target.value)}
-                onKeyDown={handleKeyDown}
+                onKeyDown={e => e.key === 'Enter' && handleSubmit()}
                 placeholder="e.g. What's the difference between VPS and shared hosting?"
                 disabled={loading}
               />
@@ -85,7 +80,7 @@ export default function AskHostlore() {
                 onClick={() => handleSubmit()}
                 disabled={loading || question.trim().length < 3}
               >
-                {loading ? 'Thinking...' : 'Ask'}
+                {loading ? '🤔 Thinking...' : 'Ask!'}
               </button>
             </div>
           </div>
@@ -109,7 +104,7 @@ export default function AskHostlore() {
           </div>
 
           {result && (
-            <div className={`ask-result${result.matched ? '' : ' ask-result-unmatched'}`}>
+            <div className={`ask-result${result.matched ? '' : ' unmatched'}`}>
               {result.matched ? (
                 <>
                   <div className="ask-result-icon">✅</div>
@@ -127,16 +122,16 @@ export default function AskHostlore() {
                       setResult(null);
                     }}
                   >
-                    Go to {result.label}
+                    Go to {result.label} →
                   </a>
                 </>
               ) : (
                 <>
                   <div className="ask-result-icon">📝</div>
-                  <h3>We don&apos;t have that yet</h3>
+                  <h3>Not covered yet!</h3>
                   <p>
-                    Your question about <strong>&ldquo;{result.query}&rdquo;</strong> hasn&apos;t
-                    been covered yet. We&apos;ve logged it — it helps us decide what to teach next!
+                    We haven&apos;t written about <strong>&ldquo;{result.query}&rdquo;</strong> yet.
+                    We&apos;ve logged your question — it helps us decide what to teach next!
                   </p>
                   {result.issueUrl && (
                     <a href={result.issueUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary">
@@ -160,35 +155,35 @@ export default function AskHostlore() {
           align-items: center;
           gap: 8px;
           justify-content: center;
-          font-size: 0.8rem;
+          font-size: 0.85rem;
           color: var(--text-muted);
-          margin-bottom: 24px;
+          margin-bottom: 20px;
           font-family: var(--font-display);
         }
         .ask-dot {
-          width: 8px; height: 8px;
+          width: 10px; height: 10px;
           border-radius: 50%;
           background: var(--text-dim);
         }
-        .ask-dot.online { background: var(--green); box-shadow: 0 0 8px rgba(52, 211, 153, 0.4); }
+        .ask-dot.online { background: var(--green); box-shadow: 0 0 8px rgba(0, 184, 148, 0.4); }
         .ask-box {
           background: var(--bg-card);
-          border: 1px solid var(--border-md);
+          border: 2px solid var(--border);
           border-radius: 16px;
           padding: 6px;
-          margin-bottom: 20px;
+          margin-bottom: 18px;
           transition: border-color var(--fast), box-shadow var(--fast);
         }
         .ask-box:focus-within {
-          border-color: var(--border-accent);
-          box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+          border-color: var(--coral);
+          box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.1);
         }
-        .ask-input-row {
+        .ask-row {
           display: flex;
           align-items: center;
           gap: 8px;
         }
-        .ask-input-icon { padding-left: 12px; font-size: 1rem; flex-shrink: 0; }
+        .ask-icon { padding-left: 14px; font-size: 1.1rem; flex-shrink: 0; }
         .ask-input {
           flex: 1;
           background: none;
@@ -205,63 +200,63 @@ export default function AskHostlore() {
           background: var(--gradient-primary);
           color: #fff;
           border: none;
-          padding: 12px 22px;
+          padding: 12px 24px;
           border-radius: 12px;
           font-family: var(--font-display);
-          font-weight: 700;
-          font-size: 0.88rem;
+          font-weight: 600;
+          font-size: 0.9rem;
           cursor: pointer;
           white-space: nowrap;
-          transition: opacity var(--fast);
+          transition: all var(--fast);
           flex-shrink: 0;
         }
-        .ask-btn:hover { opacity: 0.88; }
-        .ask-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .ask-btn:hover { transform: scale(1.03); }
+        .ask-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-        .ask-trending { text-align: center; margin-bottom: 32px; }
+        .ask-trending { text-align: center; margin-bottom: 28px; }
         .ask-trending-label {
-          font-size: 0.78rem;
-          color: var(--text-dim);
+          font-size: 0.8rem;
+          color: var(--text-muted);
           margin-bottom: 10px;
           display: block;
         }
         .ask-chips {
           display: flex;
           flex-wrap: wrap;
-          gap: 6px;
+          gap: 8px;
           justify-content: center;
         }
         .ask-chip {
-          background: var(--bg-card);
-          border: 1px solid var(--border);
-          color: var(--text-muted);
-          padding: 6px 14px;
+          background: var(--bg);
+          border: 2px solid var(--border);
+          color: var(--text-secondary);
+          padding: 6px 16px;
           border-radius: 100px;
-          font-size: 0.8rem;
+          font-size: 0.82rem;
           cursor: pointer;
           font-family: var(--font-body);
           transition: all var(--fast);
         }
         .ask-chip:hover {
-          border-color: var(--border-accent);
+          border-color: var(--purple);
           color: var(--purple);
-          background: rgba(139, 92, 246, 0.06);
+          background: var(--purple-bg);
         }
 
         .ask-result {
           background: var(--bg-card);
-          border: 1px solid var(--green);
+          border: 2px solid var(--green);
           border-radius: 16px;
           padding: 32px;
           text-align: center;
-          animation: resultIn 0.35s var(--ease-out);
+          animation: popIn 0.35s var(--ease-out);
         }
-        .ask-result-unmatched { border-color: var(--amber); }
-        .ask-result-icon { font-size: 2.4rem; margin-bottom: 12px; }
+        .ask-result.unmatched { border-color: var(--yellow); }
+        .ask-result-icon { font-size: 2.5rem; margin-bottom: 12px; }
         .ask-result h3 {
           font-family: var(--font-display);
-          font-size: 1.15rem;
-          font-weight: 700;
+          font-size: 1.2rem;
+          font-weight: 600;
           margin-bottom: 8px;
         }
         .ask-result p {
@@ -273,13 +268,13 @@ export default function AskHostlore() {
         .ask-result strong { color: var(--purple); }
         .ask-result .btn { margin: 0 auto; }
 
-        @keyframes resultIn {
-          from { opacity: 0; transform: translateY(12px); }
-          to { opacity: 1; transform: translateY(0); }
+        @keyframes popIn {
+          from { opacity: 0; transform: translateY(12px) scale(0.97); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         @media (max-width: 640px) {
-          .ask-input-row { flex-wrap: wrap; }
+          .ask-row { flex-wrap: wrap; }
           .ask-btn { width: 100%; justify-content: center; }
         }
       `}</style>

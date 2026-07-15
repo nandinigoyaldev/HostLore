@@ -1,29 +1,29 @@
 'use client';
 const CATEGORIES = [
   {
-    label: 'Frontend & JAMstack', icon: '🎨',
+    label: 'Frontend & Static Sites', icon: '🎨',
     platforms: [
-      { icon: '▲', name: 'Vercel', tagline: 'Next.js native', desc: 'Best for Next.js apps. Automatic ISR, edge functions, preview deployments.', free: 'Hobby tier free', best: 'Next.js apps', color: '#fff' },
-      { icon: '⊞', name: 'Netlify', tagline: 'JAMstack pioneer', desc: 'Great for static sites and serverless functions. Drag-and-drop deploys.', free: 'Free tier (300 min/mo)', best: 'Static sites, forms', color: '#38bdf8' },
-      { icon: '◎', name: 'Cloudflare Pages', tagline: 'Edge-first', desc: 'Deploy to Cloudflare\'s global edge network. Fast, cheap, generous free tier.', free: 'Very generous free tier', best: 'Static & edge apps', color: '#fbbf24' },
-      { icon: '◆', name: 'GitHub Pages', tagline: 'Free static hosting', desc: 'Free hosting for static sites directly from GitHub repos. Limited but reliable.', free: 'Completely free', best: 'Docs, portfolio sites', color: '#34d399' },
+      { icon: '▲', name: 'Vercel', tagline: 'Best for Next.js', desc: 'Automatic ISR, edge functions, preview deploys. The Next.js native platform.', color: '#fff', bg: '#000', free: 'Generous free tier', best: 'Next.js apps' },
+      { icon: '⊞', name: 'Netlify', tagline: 'JAMstack pioneer', desc: 'Great for static sites and serverless functions. Drag-and-drop deploys from Git.', color: '#38bdf8', bg: '#e0f2fe', free: 'Free tier (300 min/mo)', best: 'Static sites, forms' },
+      { icon: '◎', name: 'Cloudflare Pages', tagline: 'Edge-first hosting', desc: 'Deploy to Cloudflare\'s global edge network. Fast, cheap, generous free tier.', color: '#fbbf24', bg: '#fef3c7', free: 'Very generous free tier', best: 'Static & edge apps' },
+      { icon: '◆', name: 'GitHub Pages', tagline: 'Free & simple', desc: 'Free hosting from GitHub repos. Limited but perfect for docs and portfolios.', color: '#34d399', bg: '#d1fae5', free: 'Completely free', best: 'Docs, portfolio' },
     ],
   },
   {
-    label: 'Backend & Full-stack', icon: '⚙️',
+    label: 'Backend & Full-Stack', icon: '⚙️',
     platforms: [
-      { icon: '⬡', name: 'Railway', tagline: 'Deploy anything', desc: 'Full-stack deployment with databases, cron jobs, and private networking.', free: 'Free tier ($5 credit)', best: 'Full-stack apps', color: '#8b5cf6' },
-      { icon: '◈', name: 'Render', tagline: 'Heroku alternative', desc: 'Easy deployment for web services, static sites, cron jobs, and databases.', free: 'Free tier (sleeps after inactivity)', best: 'Backend APIs', color: '#22d3ee' },
-      { icon: '△', name: 'Supabase', tagline: 'Firebase alternative', desc: 'Open-source backend with PostgreSQL, auth, realtime, and storage.', free: 'Free tier', best: 'Apps needing a backend fast', color: '#34d399' },
-      { icon: '○', name: 'DigitalOcean', tagline: 'Simple cloud', desc: 'Droplets (VMs), App Platform (PaaS), managed databases. Developer-friendly pricing.', free: 'No free tier ($6/mo min)', best: 'VPS & managed infra', color: '#6366f1' },
+      { icon: '⬡', name: 'Railway', tagline: 'Deploy anything', desc: 'Full-stack with databases, cron jobs, and private networking. Developer-friendly.', color: '#8b5cf6', bg: '#ede9fe', free: 'Free tier ($5 credit)', best: 'Full-stack apps' },
+      { icon: '◈', name: 'Render', tagline: 'Heroku alternative', desc: 'Easy deployment for web services, static sites, and databases. Sleeps on free tier.', color: '#22d3ee', bg: '#cffafe', free: 'Free tier (sleeps after inactivity)', best: 'Backend APIs' },
+      { icon: '△', name: 'Supabase', tagline: 'Firebase alternative', desc: 'Open-source backend with PostgreSQL, auth, realtime, and storage.', color: '#34d399', bg: '#d1fae5', free: 'Free tier', best: 'Apps needing a backend fast' },
+      { icon: '○', name: 'DigitalOcean', tagline: 'Simple cloud', desc: 'Droplets (VMs), App Platform, managed databases. Developer-friendly pricing.', color: '#6366f1', bg: '#e0e7ff', free: 'No free tier ($6/mo min)', best: 'VPS & managed infra' },
     ],
   },
   {
     label: 'Cloud Providers', icon: '☁️',
     platforms: [
-      { icon: 'A', name: 'AWS', tagline: 'The 800-pound gorilla', desc: '200+ services. EC2, Lambda, S3, RDS. Infinite scale, infinite complexity.', free: 'Free tier (12 months)', best: 'Enterprise, any scale', color: '#fbbf24' },
-      { icon: 'G', name: 'Google Cloud', tagline: 'Data & ML focused', desc: 'BigQuery, Cloud Run, GKE. Strong in data analytics and machine learning.', free: 'Free tier ($300 credit)', best: 'Data-heavy apps', color: '#38bdf8' },
-      { icon: 'A', name: 'Azure', tagline: 'Enterprise Microsoft', desc: 'Best for .NET apps, Active Directory, and enterprise hybrid cloud.', free: 'Free tier ($200 credit)', best: 'Enterprise .NET apps', color: '#6366f1' },
+      { icon: 'A', name: 'AWS', tagline: 'The 800-lb gorilla', desc: '200+ services — EC2, Lambda, S3, RDS. Infinite scale, infinite complexity.', color: '#fbbf24', bg: '#fef3c7', free: 'Free tier (12 months)', best: 'Enterprise, any scale' },
+      { icon: 'G', name: 'Google Cloud', tagline: 'Data & ML focused', desc: 'BigQuery, Cloud Run, GKE. Strong in data analytics and machine learning.', color: '#38bdf8', bg: '#e0f2fe', free: 'Free tier ($300 credit)', best: 'Data-heavy apps' },
+      { icon: 'A', name: 'Azure', tagline: 'Enterprise Microsoft', desc: 'Best for .NET apps, Active Directory, and enterprise hybrid cloud.', color: '#6366f1', bg: '#e0e7ff', free: 'Free tier ($200 credit)', best: 'Enterprise .NET apps' },
     ],
   },
 ];
@@ -31,37 +31,36 @@ const CATEGORIES = [
 export default function Platforms() {
   return (
     <section id="platforms" className="section">
-      <span className="section-number">04</span>
       <div className="container">
         <div className="section-header">
-          <div className="section-label">Platforms</div>
+          <div className="section-label">🚀 Platforms</div>
           <h2 className="section-title">
             Where should you deploy?
           </h2>
           <p className="section-desc">
             Frontend, backend, or full-stack? Free tier or enterprise? Here&apos;s how
-            the most popular platforms compare.
+            the most popular platforms stack up.
           </p>
         </div>
 
         {CATEGORIES.map(cat => (
-          <div key={cat.label} className="platform-category">
-            <div className="platform-category-header">
-              <span className="platform-category-icon">{cat.icon}</span>
+          <div key={cat.label} className="cat">
+            <div className="cat-header">
+              <span className="cat-icon">{cat.icon}</span>
               <h3>{cat.label}</h3>
             </div>
-            <div className="platform-grid">
+            <div className="p-grid">
               {cat.platforms.map(p => (
-                <div key={p.name} className="platform-card">
-                  <div className="platform-logo-wrap" style={{ background: `${p.color}10`, color: p.color }}>
+                <div key={p.name} className="p-card">
+                  <div className="p-logo" style={{ background: p.bg, color: p.color }}>
                     {p.icon}
                   </div>
-                  <h4 className="platform-name">{p.name}</h4>
-                  <div className="platform-tagline">{p.tagline}</div>
-                  <p className="platform-desc">{p.desc}</p>
-                  <div className="platform-meta">
-                    <span className="platform-free">🆓 {p.free}</span>
-                    <span className="platform-best-label">Best: {p.best}</span>
+                  <h4 className="p-name">{p.name}</h4>
+                  <div className="p-tagline">{p.tagline}</div>
+                  <p className="p-desc">{p.desc}</p>
+                  <div className="p-meta">
+                    <span className="p-free">🆓 {p.free}</span>
+                    <span className="p-best">Best: {p.best}</span>
                   </div>
                 </div>
               ))}
@@ -71,44 +70,43 @@ export default function Platforms() {
       </div>
 
       <style jsx>{`
-        .platform-category { margin-bottom: 48px; }
-        .platform-category:last-child { margin-bottom: 0; }
-        .platform-category-header {
+        .cat { margin-bottom: 44px; }
+        .cat:last-child { margin-bottom: 0; }
+        .cat-header {
           display: flex;
           align-items: center;
           gap: 10px;
-          margin-bottom: 20px;
+          margin-bottom: 18px;
           padding-bottom: 12px;
-          border-bottom: 1px solid var(--border);
+          border-bottom: 2px solid var(--border);
         }
-        .platform-category-header h3 {
+        .cat-header h3 {
           font-family: var(--font-display);
-          font-size: 1rem;
-          font-weight: 700;
+          font-size: 1.05rem;
+          font-weight: 600;
           color: var(--text-secondary);
         }
-        .platform-category-icon { font-size: 1.2rem; }
-        .platform-grid {
+        .cat-icon { font-size: 1.2rem; }
+        .p-grid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
           gap: 14px;
         }
-        .platform-card {
+        .p-card {
           background: var(--bg-card);
-          border: 1px solid var(--border);
-          border-radius: 14px;
+          border: 2px solid var(--border);
+          border-radius: 16px;
           padding: 22px;
           transition: all var(--med);
         }
-        .platform-card:hover {
-          border-color: var(--border-accent);
+        .p-card:hover {
+          border-color: var(--purple);
+          box-shadow: var(--shadow-md);
           transform: translateY(-3px);
-          box-shadow: var(--shadow-glow);
         }
-        .platform-logo-wrap {
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
+        .p-logo {
+          width: 40px; height: 40px;
+          border-radius: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -116,48 +114,48 @@ export default function Platforms() {
           font-weight: 800;
           font-family: var(--font-display);
           margin-bottom: 12px;
-          border: 1px solid rgba(255, 255, 255, 0.06);
         }
-        .platform-name {
+        .p-name {
           font-family: var(--font-display);
           font-size: 1rem;
-          font-weight: 700;
+          font-weight: 600;
           margin-bottom: 2px;
         }
-        .platform-tagline {
-          font-size: 0.75rem;
+        .p-tagline {
+          font-size: 0.76rem;
           color: var(--purple);
-          font-style: italic;
-          margin-bottom: 10px;
+          font-weight: 600;
+          margin-bottom: 8px;
+          font-family: var(--font-display);
         }
-        .platform-desc {
+        .p-desc {
           font-size: 0.82rem;
           color: var(--text-secondary);
           line-height: 1.65;
           margin-bottom: 14px;
         }
-        .platform-meta {
+        .p-meta {
           display: flex;
           flex-direction: column;
           gap: 4px;
           padding-top: 12px;
-          border-top: 1px solid var(--border);
+          border-top: 2px solid var(--border);
         }
-        .platform-free {
+        .p-free {
           font-size: 0.78rem;
           font-weight: 600;
           color: var(--green);
         }
-        .platform-best-label {
-          font-size: 0.75rem;
-          color: var(--text-dim);
+        .p-best {
+          font-size: 0.76rem;
+          color: var(--text-muted);
         }
 
         @media (max-width: 1024px) {
-          .platform-grid { grid-template-columns: repeat(2, 1fr); }
+          .p-grid { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 640px) {
-          .platform-grid { grid-template-columns: 1fr; }
+          .p-grid { grid-template-columns: 1fr; }
         }
       `}</style>
     </section>

@@ -7,7 +7,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
+    const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
@@ -27,10 +27,10 @@ export default function Navbar() {
   }
 
   return (
-    <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
+    <nav className={`nav${scrolled ? ' scrolled' : ''}`}>
       <div className="nav-inner">
         <a href="#hero" className="nav-logo" onClick={e => handleNav(e, '#hero')}>
-          <Image src="/favicon/hostlore.svg" alt="" width={28} height={28} />
+          <span className="nav-logo-icon">🦎</span>
           <span className="nav-logo-text gradient-text">HostLore</span>
         </a>
 
@@ -41,7 +41,7 @@ export default function Navbar() {
             </a>
           ))}
           <a href="#ask" className="nav-cta" onClick={e => handleNav(e, '#ask')}>
-            Ask AI
+            Ask Away!
           </a>
         </div>
 
@@ -55,19 +55,17 @@ export default function Navbar() {
       </div>
 
       <style jsx>{`
-        .navbar {
+        .nav {
           position: fixed;
           top: 0; left: 0; right: 0;
           z-index: 500;
           padding: 16px 0;
           transition: all var(--fast);
-          border-bottom: 1px solid transparent;
         }
-        .navbar.scrolled {
-          background: rgba(12, 12, 34, 0.88);
-          backdrop-filter: blur(24px);
-          -webkit-backdrop-filter: blur(24px);
-          border-bottom-color: var(--border);
+        .nav.scrolled {
+          background: rgba(255, 255, 255, 0.92);
+          backdrop-filter: blur(20px);
+          box-shadow: var(--shadow-sm);
           padding: 10px 0;
         }
         .nav-inner {
@@ -81,49 +79,51 @@ export default function Navbar() {
         .nav-logo {
           display: flex;
           align-items: center;
-          gap: 10px;
+          gap: 8px;
           text-decoration: none;
-          flex-shrink: 0;
         }
-        .nav-logo img {
-          width: 28px;
-          height: 28px;
+        .nav-logo-icon {
+          font-size: 1.5rem;
         }
         .nav-logo-text {
           font-family: var(--font-display);
-          font-size: 1.2rem;
-          font-weight: 800;
+          font-size: 1.3rem;
+          font-weight: 700;
         }
         .nav-menu {
           display: flex;
           align-items: center;
-          gap: 2px;
+          gap: 4px;
         }
         .nav-link {
-          color: var(--text-muted);
+          color: var(--text-secondary);
           text-decoration: none;
-          font-size: 0.85rem;
+          font-size: 0.9rem;
           font-weight: 500;
-          padding: 8px 14px;
-          border-radius: 8px;
+          padding: 8px 16px;
+          border-radius: 10px;
           transition: all var(--fast);
         }
         .nav-link:hover {
-          color: var(--text-primary);
-          background: rgba(255, 255, 255, 0.04);
+          color: var(--coral);
+          background: var(--coral-bg);
         }
         .nav-cta {
           background: var(--gradient-primary);
           color: #fff;
           text-decoration: none;
-          font-size: 0.85rem;
-          font-weight: 700;
-          padding: 8px 18px;
-          border-radius: 8px;
+          font-size: 0.9rem;
+          font-weight: 600;
+          padding: 8px 20px;
+          border-radius: 10px;
           margin-left: 8px;
-          transition: opacity var(--fast);
+          transition: all var(--fast);
+          font-family: var(--font-display);
         }
-        .nav-cta:hover { opacity: 0.9; }
+        .nav-cta:hover {
+          transform: scale(1.05);
+          box-shadow: var(--shadow-color);
+        }
         .hamburger {
           display: none;
           flex-direction: column;
@@ -132,35 +132,36 @@ export default function Navbar() {
           border: none;
           cursor: pointer;
           padding: 6px;
-          border-radius: 6px;
+          border-radius: 8px;
         }
         .hamburger span {
           display: block;
-          width: 20px;
-          height: 2px;
-          background: var(--text-muted);
-          border-radius: 2px;
+          width: 22px;
+          height: 3px;
+          background: var(--text-secondary);
+          border-radius: 3px;
           transition: all var(--fast);
         }
-        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
         .hamburger.open span:nth-child(2) { opacity: 0; }
-        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        .hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
         @media (max-width: 768px) {
           .hamburger { display: flex; }
           .nav-menu {
             display: none;
             position: fixed;
-            top: 60px; left: 0; right: 0;
-            background: rgba(12, 12, 34, 0.97);
-            backdrop-filter: blur(24px);
+            top: 60px; left: 12px; right: 12px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 16px;
             flex-direction: column;
             padding: 12px;
-            border-bottom: 1px solid var(--border);
-            gap: 2px;
+            gap: 4px;
+            box-shadow: var(--shadow-lg);
           }
           .nav-menu.open { display: flex; }
-          .nav-link { text-align: center; padding: 12px; }
+          .nav-link { text-align: center; padding: 12px; border-radius: 10px; }
           .nav-cta { text-align: center; margin-left: 0; margin-top: 4px; }
         }
       `}</style>
