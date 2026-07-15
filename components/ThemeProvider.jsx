@@ -1,22 +1,19 @@
 'use client';
 import { createContext, useContext, useEffect, useState } from 'react';
 
-const ThemeContext = createContext({ theme: 'light', toggle: () => {} });
+const ThemeContext = createContext({ theme: 'light', toggle: () => {}, mounted: false });
 
 export function useTheme() {
   return useContext(ThemeContext);
 }
 
 export default function ThemeProvider({ children }) {
-  const [mounted, setMounted] = useState(false);
   const [theme, setTheme] = useState('light');
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem('hostlore-theme');
-    const prefers = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    const initial = stored || prefers;
-    setTheme(initial);
-    document.documentElement.setAttribute('data-theme', initial);
+    const t = document.documentElement.getAttribute('data-theme') || 'light';
+    setTheme(t);
     setMounted(true);
   }, []);
 

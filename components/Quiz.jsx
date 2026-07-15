@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 const SECTIONS = [
   {
@@ -44,12 +44,22 @@ const SECTIONS = [
 function getScores() {
   if (typeof window === 'undefined') return {};
   try {
-    return JSON.parse(localStorage.getItem('hostlore-quiz') || '{}');
+    const stored = JSON.parse(localStorage.getItem('hostlore-quiz') || '{}');
+    // Also sync to progress
+    const progress = JSON.parse(localStorage.getItem('hostlore-progress') || '{"viewed":[],"bookmarks":[],"quizScores":{}}');
+    if (JSON.stringify(progress.quizScores) !== JSON.stringify(stored)) {
+      progress.quizScores = stored;
+      localStorage.setItem('hostlore-progress', JSON.stringify(progress));
+    }
+    return stored;
   } catch { return {}; }
 }
 
 function saveScores(scores) {
   localStorage.setItem('hostlore-quiz', JSON.stringify(scores));
+  const progress = JSON.parse(localStorage.getItem('hostlore-progress') || '{"viewed":[],"bookmarks":[],"quizScores":{}}');
+  progress.quizScores = scores;
+  localStorage.setItem('hostlore-progress', JSON.stringify(progress));
 }
 
 export default function Quiz() {
@@ -59,6 +69,7 @@ export default function Quiz() {
   const [showResult, setShowResult] = useState(false);
   const [scores, setScores] = useState({});
   const [started, setStarted] = useState(false);
+  const [justCompleted, setJustCompleted] = useState(false);
 
   useEffect(() => { setScores(getScores()); }, []);
 
@@ -72,19 +83,14 @@ export default function Quiz() {
     setSelected(idx);
     setShowResult(true);
 
-    if (idx === question.ans) {
-      const newScores = { ...scores };
-      const prev = newScores[section.id] || { correct: 0, total: 0 };
-      newScores[section.id] = { correct: prev.correct + 1, total: prev.total + 1 };
-      setScores(newScores);
-      saveScores(newScores);
-    } else {
-      const newScores = { ...scores };
-      const prev = newScores[section.id] || { correct: 0, total: 0 };
-      newScores[section.id] = { correct: prev.correct, total: prev.total + 1 };
-      setScores(newScores);
-      saveScores(newScores);
-    }
+    const newScores = { ...scores };
+    const prev = newScores[section.id] || { correct: 0, total: 0 };
+    newScores[section.id] = {
+      correct: prev.correct + (idx === question.ans ? 1 : 0),
+      total: prev.total + 1,
+    };
+    setScores(newScores);
+    saveScores(newScores);
   }
 
   function handleNext() {
@@ -98,11 +104,16 @@ export default function Quiz() {
       setSelected(null);
       setShowResult(false);
     } else {
-      setStarted(false);
-      setActiveSection(0);
-      setQuestionIdx(0);
-      setSelected(null);
-      setShowResult(false);
+      setJustCompleted(true);
+      window.dispatchEvent(new CustomEvent('quiz-complete'));
+      setTimeout(() => {
+        setStarted(false);
+        setActiveSection(0);
+        setQuestionIdx(0);
+        setSelected(null);
+        setShowResult(false);
+        setJustCompleted(false);
+      }, 500);
     }
   }
 
@@ -123,7 +134,10 @@ export default function Quiz() {
 
           {allTotal > 0 && (
             <div className="quiz-overall">
-              <span className="quiz-overall-score">📊 {allCorrect}/{allTotal} across all topics</span>
+              <span className="quiz-overall-score">
+                📊 {allCorrect}/{allTotal} across all topics ({allTotal > 0 ? Math.round((allCorrect / allTotal) * 100) : 0}%)
+                {allTotal === 17 && <span className="quiz-complete-badge"> 🎉 Complete!</span>}
+              </span>
             </div>
           )}
 
@@ -138,7 +152,7 @@ export default function Quiz() {
                 >
                   <div className="quiz-topic-title">{s.title}</div>
                   {sc ? (
-                    <div className="quiz-topic-score">{sc.correct}/{sc.total}</div>
+                    <div className="quiz-topic-score">{sc.correct}/{sc.total} ({Math.round((sc.correct / sc.total) * 100)}%)</div>
                   ) : (
                     <div className="quiz-topic-start">Start →</div>
                   )}
@@ -162,6 +176,7 @@ export default function Quiz() {
             border-radius: 12px;
             border: 2px solid var(--border);
           }
+          .quiz-complete-badge { color: var(--green); }
           .quiz-topics {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -209,13 +224,25 @@ export default function Quiz() {
     );
   }
 
+  if (justCompleted) {
+    return (
+      <section id="quiz" className="section" style={{ background: 'var(--bg-warm)' }}>
+        <div className="container" style={{ textAlign: 'center', padding: '60px 0' }}>
+          <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🎉</div>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700, marginBottom: '8px' }}>All quizzes complete!</h2>
+          <p style={{ color: 'var(--text-secondary)' }}>You&apos;ve mastered all topics. Check your progress dashboard for your scores.</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="quiz" className="section" style={{ background: 'var(--bg-warm)' }}>
       <div className="container">
         <div className="quiz-header">
           <div className="quiz-progress">
             <span className="quiz-section-name">{section.title}</span>
-            <span className="quiz-counter">Question {questionIdx + 1} of {total}</span>
+            <span className="quiz-counter">Q{questionIdx + 1}/{total}</span>
           </div>
           <div className="quiz-progress-bar">
             <div className="quiz-progress-fill" style={{ width: `${((questionIdx + 1) / total) * 100}%` }} />
@@ -232,7 +259,7 @@ export default function Quiz() {
                 onClick={() => handleAnswer(i)}
                 disabled={selected !== null}
               >
-                <span className="quiz-option-letter">{String.fromCharCode(65 + i)}</span>
+                <span className="quiz-opt-letter">{String.fromCharCode(65 + i)}</span>
                 <span>{opt}</span>
                 {showResult && i === question.ans && <span className="quiz-mark">✓</span>}
                 {showResult && selected === i && i !== question.ans && <span className="quiz-mark wrong-mark">✗</span>}
@@ -243,7 +270,7 @@ export default function Quiz() {
           {showResult && (
             <div className="quiz-feedback">
               <button className="btn btn-primary" onClick={handleNext}>
-                {questionIdx + 1 < total ? 'Next Question →' : activeSection + 1 < SECTIONS.length ? 'Next Topic →' : '🎉 All Done! See Scores'}
+                {questionIdx + 1 < total ? 'Next →' : activeSection + 1 < SECTIONS.length ? 'Next Topic →' : '🎉 Finish!'}
               </button>
             </div>
           )}
@@ -260,106 +287,39 @@ export default function Quiz() {
           justify-content: space-between;
           margin-bottom: 8px;
         }
-        .quiz-section-name {
-          font-family: var(--font-display);
-          font-weight: 600;
-          color: var(--text-secondary);
-        }
-        .quiz-counter {
-          font-size: 0.85rem;
-          color: var(--text-muted);
-        }
-        .quiz-progress-bar {
-          height: 4px;
-          background: var(--bg-soft);
-          border-radius: 4px;
-          overflow: hidden;
-        }
-        .quiz-progress-fill {
-          height: 100%;
-          background: var(--gradient-primary);
-          border-radius: 4px;
-          transition: width 0.3s var(--ease-out);
-        }
+        .quiz-section-name { font-family: var(--font-display); font-weight: 600; color: var(--text-secondary); }
+        .quiz-counter { font-size: 0.85rem; color: var(--text-muted); }
+        .quiz-progress-bar { height: 4px; background: var(--bg-soft); border-radius: 4px; overflow: hidden; }
+        .quiz-progress-fill { height: 100%; background: var(--gradient-primary); border-radius: 4px; transition: width 0.3s var(--ease-out); }
         .quiz-card {
-          max-width: 560px;
-          margin: 0 auto;
-          background: var(--bg-card);
-          border: 2px solid var(--border);
-          border-radius: 20px;
-          padding: 32px;
+          max-width: 560px; margin: 0 auto;
+          background: var(--bg-card); border: 2px solid var(--border);
+          border-radius: 20px; padding: 32px;
         }
-        .quiz-question {
-          font-family: var(--font-display);
-          font-size: 1.15rem;
-          font-weight: 600;
-          margin-bottom: 24px;
-          color: var(--text-primary);
-        }
-        .quiz-options {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-          margin-bottom: 20px;
-        }
+        .quiz-question { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; margin-bottom: 24px; }
+        .quiz-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .quiz-option {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          padding: 14px 18px;
-          background: var(--bg);
-          border: 2px solid var(--border);
-          border-radius: 12px;
-          cursor: pointer;
-          font-family: var(--font-body);
-          font-size: 0.9rem;
-          color: var(--text-primary);
-          text-align: left;
+          display: flex; align-items: center; gap: 12px;
+          padding: 14px 18px; background: var(--bg);
+          border: 2px solid var(--border); border-radius: 12px;
+          cursor: pointer; font-family: var(--font-body); font-size: 0.9rem;
+          color: var(--text-primary); text-align: left;
           transition: all var(--fast);
         }
-        .quiz-option:hover:not(:disabled) {
-          border-color: var(--purple);
-          background: var(--purple-bg);
-        }
+        .quiz-option:hover:not(:disabled) { border-color: var(--purple); background: var(--purple-bg); }
         .quiz-option.selected { border-color: var(--purple); }
-        .quiz-option.correct {
-          border-color: var(--green);
-          background: #d1fae5;
-          color: #065f46;
+        .quiz-option.correct { border-color: var(--green); background: #d1fae5; color: #065f46; }
+        [data-theme="dark"] .quiz-option.correct { background: #064e3b; color: #6ee7b7; }
+        .quiz-option.wrong { border-color: var(--coral); background: var(--coral-bg); color: var(--coral); }
+        .quiz-opt-letter {
+          width: 28px; height: 28px; border-radius: 8px;
+          background: var(--bg-soft); display: flex; align-items: center;
+          justify-content: center; font-weight: 700; font-size: 0.8rem;
+          flex-shrink: 0; font-family: var(--font-display);
         }
-        [data-theme="dark"] .quiz-option.correct {
-          background: #064e3b;
-          color: #6ee7b7;
-        }
-        .quiz-option.wrong {
-          border-color: var(--coral);
-          background: var(--coral-bg);
-          color: var(--coral);
-        }
-        .quiz-option-letter {
-          width: 28px;
-          height: 28px;
-          border-radius: 8px;
-          background: var(--bg-soft);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: 700;
-          font-size: 0.8rem;
-          flex-shrink: 0;
-          font-family: var(--font-display);
-        }
-        .quiz-mark {
-          margin-left: auto;
-          font-size: 1.1rem;
-          font-weight: 700;
-          color: var(--green);
-        }
+        .quiz-mark { margin-left: auto; font-size: 1.1rem; font-weight: 700; color: var(--green); }
         .wrong-mark { color: var(--coral); }
-        .quiz-feedback {
-          text-align: center;
-          animation: fadeSlide 0.3s var(--ease-out);
-        }
+        .quiz-feedback { text-align: center; animation: fadeSlide 0.3s var(--ease-out); }
         @keyframes fadeSlide { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
       `}</style>
     </section>

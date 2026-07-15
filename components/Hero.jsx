@@ -1,17 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-const STEPS = [
-  { icon: '⌨️', label: 'Type URL', color: '#ff6b6b' },
-  { icon: '📖', label: 'DNS Lookup', color: '#6c5ce7' },
-  { icon: '🤝', label: 'Connect', color: '#4ecdc4' },
-  { icon: '🖥️', label: 'Server', color: '#fd79a8' },
-  { icon: '🎉', label: 'Page!', color: '#ffd93d' },
-];
-
 export default function Hero() {
   const [stats, setStats] = useState(null);
-  const [activeStep, setActiveStep] = useState(0);
 
   useEffect(() => {
     fetch('/api/stats')
@@ -20,46 +11,31 @@ export default function Hero() {
       .catch(() => {});
   }, []);
 
-  useEffect(() => {
-    const t = setInterval(() => setActiveStep(p => (p + 1) % STEPS.length), 1000);
-    return () => clearInterval(t);
-  }, []);
-
   return (
-    <section id="hero" className="hero">
-      <div className="hero-bg-shape hero-shape-1" />
-      <div className="hero-bg-shape hero-shape-2" />
-      <div className="hero-bg-shape hero-shape-3" />
-
-      <div className="hero-content">
-        <div className="hero-text">
+    <section id="hero" className="hero-section">
+      <div className="hero-bg" />
+      <div className="hero-inner">
+        <div className="hero-left">
           <div className="hero-badge">
-            <span>🦎</span> Interactive learning platform
+            <span className="hero-dot" />
+            Interactive learning platform
           </div>
 
           <h1 className="hero-title">
-            How the web
-            <br />
-            <span className="gradient-text">actually works</span>
+            How the web<br />
+            <span className="hero-title-grad">actually works</span>
           </h1>
 
-          <p className="hero-subtitle">
+          <p className="hero-desc">
             From typing a URL to pixels on screen — learn about hosting, servers,
             databases, and deployment with fun analogies and zero jargon.
           </p>
 
-          <div className="hero-actions">
-            <a href="#journey" className="btn btn-primary" onClick={e => {
-              e.preventDefault();
-              document.querySelector('#journey')?.scrollIntoView({ behavior: 'smooth' });
-            }}>
-              Start Learning
-              <span className="btn-arrow">→</span>
+          <div className="hero-btns">
+            <a href="#journey" className="btn btn-primary" onClick={e => { e.preventDefault(); document.querySelector('#journey')?.scrollIntoView({ behavior: 'smooth' }); }}>
+              Start Learning →
             </a>
-            <a href="#ask" className="btn btn-secondary" onClick={e => {
-              e.preventDefault();
-              document.querySelector('#ask')?.scrollIntoView({ behavior: 'smooth' });
-            }}>
+            <a href="#ask" className="btn btn-secondary" onClick={e => { e.preventDefault(); document.querySelector('#ask')?.scrollIntoView({ behavior: 'smooth' }); }}>
               Ask a Question
             </a>
           </div>
@@ -67,56 +43,69 @@ export default function Hero() {
           {stats && (
             <div className="hero-stats">
               <div className="hero-stat">
-                <span className="hero-stat-number">{stats.total || 0}</span>
-                <span className="hero-stat-label">Questions answered</span>
+                <span className="hero-stat-num">{stats.total || 0}</span>
+                <span className="hero-stat-lbl">Questions answered</span>
               </div>
-              <div className="hero-stat-divider" />
+              <div className="hero-stat-div" />
               <div className="hero-stat">
-                <span className="hero-stat-number">{stats.matched || 0}</span>
-                <span className="hero-stat-label">Matched to topics</span>
+                <span className="hero-stat-num">{stats.matched || 0}</span>
+                <span className="hero-stat-lbl">Matched to topics</span>
               </div>
-              <div className="hero-stat-divider" />
+              <div className="hero-stat-div" />
               <div className="hero-stat">
-                <span className="hero-stat-number">{stats.unmatched || 0}</span>
-                <span className="hero-stat-label">Suggested topics</span>
+                <span className="hero-stat-num">{stats.unmatched || 0}</span>
+                <span className="hero-stat-lbl">Suggested topics</span>
               </div>
             </div>
           )}
         </div>
 
-        <div className="hero-visual">
-          <div className="flow-card">
-            <div className="flow-card-header">
-              <span className="flow-card-dot" style={{ background: '#ff6b6b' }} />
-              <span className="flow-card-dot" style={{ background: '#ffd93d' }} />
-              <span className="flow-card-dot" style={{ background: '#4ecdc4' }} />
-              <span className="flow-card-title">hostlore.app</span>
+        <div className="hero-right">
+          <div className="hero-card">
+            <div className="hero-card-header">
+              <span className="hero-card-dot" style={{ background: '#ff6b6b' }} />
+              <span className="hero-card-dot" style={{ background: '#ffd93d' }} />
+              <span className="hero-card-dot" style={{ background: '#4ecdc4' }} />
+              <span className="hero-card-url">hostlore.app</span>
             </div>
-            <div className="flow-steps">
-              {STEPS.map((step, i) => (
-                <div key={i} className={`flow-step${i === activeStep ? ' active' : ''}`}>
-                  <div className="flow-icon" style={{ background: `${step.color}15`, color: step.color }}>
-                    {step.icon}
-                  </div>
-                  <div className="flow-label">{step.label}</div>
-                  {i < STEPS.length - 1 && (
-                    <div className={`flow-line${i < activeStep ? ' done' : ''}`}>
-                      <div className="flow-line-inner" />
-                    </div>
-                  )}
+            <div className="hero-card-body">
+              <div className="hero-flow">
+                <div className="hero-flow-item">
+                  <div className="hero-flow-icon">⌨️</div>
+                  <div className="hero-flow-bar a" />
                 </div>
-              ))}
+                <div className="hero-flow-item">
+                  <div className="hero-flow-icon">📖</div>
+                  <div className="hero-flow-bar b" />
+                </div>
+                <div className="hero-flow-item">
+                  <div className="hero-flow-icon">🤝</div>
+                  <div className="hero-flow-bar c" />
+                </div>
+                <div className="hero-flow-item">
+                  <div className="hero-flow-icon">🖥️</div>
+                  <div className="hero-flow-bar d" />
+                </div>
+                <div className="hero-flow-item">
+                  <div className="hero-flow-icon">🎉</div>
+                </div>
+              </div>
+              <div className="hero-flow-labels">
+                <span>Type</span>
+                <span>DNS</span>
+                <span>Connect</span>
+                <span>Server</span>
+                <span>Done!</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="scroll-hint">
-        <span>↓ Scroll to explore</span>
-      </div>
+      <div className="hero-scroll">↓ Scroll to explore</div>
 
       <style jsx>{`
-        .hero {
+        .hero-section {
           min-height: 100vh;
           display: flex;
           align-items: center;
@@ -124,27 +113,15 @@ export default function Hero() {
           overflow: hidden;
           padding: 120px 0 60px;
         }
-        .hero-bg-shape {
+        .hero-bg {
           position: absolute;
-          border-radius: 50%;
+          inset: 0;
           pointer-events: none;
+          background:
+            radial-gradient(ellipse at 80% 20%, rgba(255, 107, 107, 0.08) 0%, transparent 50%),
+            radial-gradient(ellipse at 20% 80%, rgba(108, 92, 231, 0.06) 0%, transparent 50%);
         }
-        .hero-shape-1 {
-          width: 500px; height: 500px;
-          background: radial-gradient(circle, rgba(255, 107, 107, 0.08) 0%, transparent 60%);
-          top: -150px; right: -100px;
-        }
-        .hero-shape-2 {
-          width: 400px; height: 400px;
-          background: radial-gradient(circle, rgba(108, 92, 231, 0.06) 0%, transparent 60%);
-          bottom: -100px; left: -100px;
-        }
-        .hero-shape-3 {
-          width: 300px; height: 300px;
-          background: radial-gradient(circle, rgba(78, 205, 196, 0.06) 0%, transparent 60%);
-          top: 40%; left: 50%;
-        }
-        .hero-content {
+        .hero-inner {
           max-width: var(--max-width);
           margin: 0 auto;
           padding: 0 var(--px);
@@ -170,6 +147,13 @@ export default function Hero() {
           margin-bottom: 20px;
           font-family: var(--font-display);
         }
+        .hero-dot {
+          width: 8px; height: 8px;
+          border-radius: 50%;
+          background: var(--green);
+          animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
         .hero-title {
           font-family: var(--font-display);
           font-size: clamp(2.8rem, 5vw, 4.2rem);
@@ -178,21 +162,25 @@ export default function Hero() {
           letter-spacing: -0.02em;
           margin-bottom: 16px;
         }
-        .hero-subtitle {
+        .hero-title-grad {
+          background: var(--gradient-primary);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        .hero-desc {
           font-size: 1.05rem;
           color: var(--text-secondary);
           max-width: 480px;
           line-height: 1.85;
           margin-bottom: 32px;
         }
-        .hero-actions {
+        .hero-btns {
           display: flex;
           gap: 12px;
           flex-wrap: wrap;
           margin-bottom: 40px;
         }
-        .btn-arrow { transition: transform var(--fast); }
-        .btn-primary:hover .btn-arrow { transform: translateX(4px); }
         .hero-stats {
           display: flex;
           align-items: center;
@@ -201,7 +189,7 @@ export default function Hero() {
           border-top: 2px solid var(--border);
         }
         .hero-stat { display: flex; flex-direction: column; }
-        .hero-stat-number {
+        .hero-stat-num {
           font-family: var(--font-display);
           font-size: 1.6rem;
           font-weight: 700;
@@ -209,29 +197,26 @@ export default function Hero() {
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
-          line-height: 1;
         }
-        .hero-stat-label {
+        .hero-stat-lbl {
           font-size: 0.72rem;
           color: var(--text-muted);
           margin-top: 4px;
-          white-space: nowrap;
           font-weight: 500;
         }
-        .hero-stat-divider {
+        .hero-stat-div {
           width: 1px; height: 36px;
           background: var(--border);
-          flex-shrink: 0;
         }
 
-        .flow-card {
+        .hero-card {
           background: var(--bg-card);
           border: 2px solid var(--border);
           border-radius: 20px;
           overflow: hidden;
           box-shadow: var(--shadow-md);
         }
-        .flow-card-header {
+        .hero-card-header {
           display: flex;
           align-items: center;
           gap: 8px;
@@ -239,56 +224,51 @@ export default function Hero() {
           background: var(--bg-soft);
           border-bottom: 2px solid var(--border);
         }
-        .flow-card-dot {
+        .hero-card-dot {
           width: 10px; height: 10px;
           border-radius: 50%;
         }
-        .flow-card-title {
+        .hero-card-url {
           margin-left: 4px;
           font-size: 0.8rem;
           color: var(--text-muted);
           font-family: var(--font-display);
         }
-        .flow-steps {
-          padding: 28px;
-          display: flex;
-          align-items: center;
+        .hero-card-body {
+          padding: 32px 28px;
         }
-        .flow-step {
+        .hero-flow {
           display: flex;
           align-items: center;
           gap: 0;
+        }
+        .hero-flow-item {
+          display: flex;
+          align-items: center;
           flex: 1;
         }
-        .flow-icon {
-          width: 52px;
-          height: 52px;
-          border-radius: 14px;
+        .hero-flow-icon {
+          width: 48px; height: 48px;
+          border-radius: 12px;
+          background: var(--bg-soft);
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 1.4rem;
-          transition: all 0.3s var(--ease-out);
+          font-size: 1.3rem;
           flex-shrink: 0;
+          animation: iconPulse 3s ease-in-out infinite;
         }
-        .flow-step.active .flow-icon {
-          transform: scale(1.15);
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        .hero-flow-item:nth-child(1) .hero-flow-icon { animation-delay: 0s; }
+        .hero-flow-item:nth-child(2) .hero-flow-icon { animation-delay: 0.6s; }
+        .hero-flow-item:nth-child(3) .hero-flow-icon { animation-delay: 1.2s; }
+        .hero-flow-item:nth-child(4) .hero-flow-icon { animation-delay: 1.8s; }
+        .hero-flow-item:nth-child(5) .hero-flow-icon { animation-delay: 2.4s; }
+        @keyframes iconPulse {
+          0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+          10% { transform: scale(1.15); box-shadow: 0 0 20px rgba(255, 107, 107, 0.2); }
+          20% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
         }
-        .flow-label {
-          display: none;
-          position: absolute;
-          bottom: -28px;
-          left: 50%;
-          transform: translateX(-50%);
-          font-size: 0.7rem;
-          font-weight: 600;
-          color: var(--text-muted);
-          white-space: nowrap;
-          font-family: var(--font-display);
-        }
-        .flow-step.active .flow-label { color: var(--coral); }
-        .flow-line {
+        .hero-flow-bar {
           flex: 1;
           height: 3px;
           margin: 0 4px;
@@ -297,15 +277,39 @@ export default function Hero() {
           position: relative;
           overflow: hidden;
         }
-        .flow-line-inner {
-          height: 100%;
-          width: 0%;
+        .hero-flow-bar::after {
+          content: '';
+          position: absolute;
+          inset: 0;
           background: var(--gradient-primary);
           border-radius: 3px;
-          transition: width 0.3s var(--ease-out);
+          animation: barFill 3s ease-in-out infinite;
         }
-        .flow-line.done .flow-line-inner { width: 100%; }
-        .scroll-hint {
+        .hero-flow-bar.a::after { animation-delay: 0.3s; }
+        .hero-flow-bar.b::after { animation-delay: 0.9s; }
+        .hero-flow-bar.c::after { animation-delay: 1.5s; }
+        .hero-flow-bar.d::after { animation-delay: 2.1s; }
+        @keyframes barFill {
+          0% { width: 0%; opacity: 0; }
+          20% { width: 100%; opacity: 1; }
+          80% { width: 100%; opacity: 1; }
+          100% { width: 0%; opacity: 0; }
+        }
+        .hero-flow-labels {
+          display: flex;
+          margin-top: 12px;
+          padding: 0 0 0 4px;
+        }
+        .hero-flow-labels span {
+          flex: 1;
+          font-size: 0.65rem;
+          color: var(--text-dim);
+          font-family: var(--font-display);
+          text-align: center;
+        }
+        .hero-flow-labels span:last-child { color: var(--green); }
+
+        .hero-scroll {
           position: absolute;
           bottom: 28px;
           left: 50%;
@@ -318,16 +322,19 @@ export default function Hero() {
         @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-8px)} }
 
         @media (max-width: 900px) {
-          .hero-content { grid-template-columns: 1fr; gap: 40px; }
-          .hero-visual { order: -1; }
-          .hero-subtitle { max-width: 100%; }
-          .flow-steps { padding: 20px; }
+          .hero-inner {
+            grid-template-columns: 1fr;
+            gap: 40px;
+          }
+          .hero-right { order: -1; }
+          .hero-desc { max-width: 100%; }
+          .hero-card-body { padding: 24px 20px; }
         }
         @media (max-width: 640px) {
           .hero-stats { gap: 14px; flex-wrap: wrap; }
-          .hero-actions { flex-direction: column; }
+          .hero-btns { flex-direction: column; }
           .btn { justify-content: center; }
-          .flow-icon { width: 42px; height: 42px; font-size: 1.1rem; }
+          .hero-flow-icon { width: 40px; height: 40px; font-size: 1.1rem; }
         }
       `}</style>
     </section>
